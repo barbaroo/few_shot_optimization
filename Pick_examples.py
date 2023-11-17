@@ -15,10 +15,21 @@ OUTPUT_FILE = f"indexes/output_{NUMBER_OF_EXAMPLES}.json"
 
 
 
-def calculate_embeddings(sentences):
-    """Calculate sentence embeddings."""
+def calculate_embeddings(sentences, batch_size=10):
+    """Calculate sentence embeddings in smaller batches."""
     model = SentenceTransformer(MODEL_NAME)
-    return model.encode(sentences)
+    
+    # Initialize an empty list to store all embeddings
+    all_embeddings = []
+    
+    # Process sentences in batches
+    for start_index in range(0, len(sentences), batch_size):
+        batch_sentences = sentences[start_index:start_index + batch_size]
+        batch_embeddings = model.encode(batch_sentences)
+        all_embeddings.extend(batch_embeddings)
+        if (np.mod(start_index, 1000)==0):
+            print(start_index)
+    return all_embeddings
 
 def find_most_similar(emb_translations, emb_examples, num_examples):
     """Find most similar sentences."""
@@ -37,14 +48,20 @@ def find_most_similar(emb_translations, emb_examples, num_examples):
 
 def main():
     df_examples = pd.read_csv(EXAMPLES_FILE, header = None )
-    list_examples = list(df_examples[1])[0:100]
+    list_examples = list(df_examples[1])
     df_translation_data = pd.read_csv(TRANSLATION_FILE, sep='delimiter', header=None, engine='python')
-    translation_sentences = list(df_translation_data[0])[0:2]
+    translation_sentences = list(df_translation_data[0])
+
+    print('Data loaded')
 
     emb_examples = calculate_embeddings(list_examples)
     emb_translation = calculate_embeddings(translation_sentences)
 
+    print('Calculation embeddings complete')
+
     dict_most_similar = find_most_similar(emb_translation, emb_examples, NUMBER_OF_EXAMPLES)
+
+    print('Calculation similarity scores complete')
 
     try:
         with open(OUTPUT_FILE, 'w') as json_file:
