@@ -9,7 +9,7 @@ The project consists of two main Python scripts:
 
 1. **Pick_examples.py**: This script is used to select few-shot learning examples from a dataset based on semantic similarity. It utilizes the `SentenceTransformer` library for calculating sentence embeddings. 
 
-2. **prompt_similarity_fewshot.py**: This script handles the actual translation task. It constructs prompts for translation by including semantically similar examples and then uses the OpenAI API to perform the translation.
+2. **prompt_selection_fewshot_confidence.py**: This script handles the actual translation task. It constructs prompts for translation by including semantically similar examples and then uses the OpenAI API to perform the translation.
 
 ## Setup and Requirements
 
