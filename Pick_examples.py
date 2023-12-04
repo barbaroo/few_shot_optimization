@@ -5,12 +5,13 @@ from sentence_transformers import SentenceTransformer
 from sentence_transformers.util import cos_sim
 
 # Constants
-NUMBER_OF_EXAMPLES = 4
+NUMBER_OF_EXAMPLES = 21
 MODEL_NAME = 'intfloat/multilingual-e5-large'
 FILE_PATH = 'data'
-EXAMPLES_FILE = f'{FILE_PATH}/Sprotin_sentences.txt'
-TRANSLATION_FILE = f'{FILE_PATH}/Faroese_Latn.devtest'
-OUTPUT_FILE = f"indexes/output_{NUMBER_OF_EXAMPLES}.json"
+QUERY_LANGUAGE = 'English'
+EXAMPLES_FILE = f'{FILE_PATH}/output_sprotin_new.csv'
+TRANSLATION_FILE = f'{FILE_PATH}/{QUERY_LANGUAGE}_Latn.devtest'
+OUTPUT_FILE = f"indexes/output_{NUMBER_OF_EXAMPLES}_{QUERY_LANGUAGE}.json"
 
 
 
@@ -47,8 +48,8 @@ def find_most_similar(emb_translations, emb_examples, num_examples):
     return most_similar
 
 def main():
-    df_examples = pd.read_csv(EXAMPLES_FILE, header = None )
-    list_examples = list(df_examples[1])
+    df_examples = pd.read_csv(EXAMPLES_FILE)
+    list_examples = list(df_examples[QUERY_LANGUAGE])
     df_translation_data = pd.read_csv(TRANSLATION_FILE, sep='delimiter', header=None, engine='python')
     translation_sentences = list(df_translation_data[0])
 
